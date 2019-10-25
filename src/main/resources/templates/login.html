@@ -1,6 +1,7 @@
 <html>
 <head>
-    <title>登录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>fish-battle</title>
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap-reboot.min.css" rel="stylesheet">
     <link href="https://cdn.bootcss.com/twitter-bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -11,6 +12,9 @@
 </head>
 <body>
 <div class="container">
+    <div class="text-center" style="margin-bottom: 5px;">
+        <img src="/static/img/fish.jpg">
+    </div>
     <div class="row" style="margin-bottom: 5px">
         <input type="text" class="form-control login-account" placeholder="账户">
     </div>
@@ -20,22 +24,35 @@
     <div class="text-center">
         <button type="button" class="btn btn-default btn-lg button-login">登录</button>
         <button type="button" class="btn btn-info btn-lg">注册</button>
-        <button type="button" class="btn btn-danger btn-lg">游客登录</button>
+        <button type="button" class="btn btn-danger btn-lg guest-login">游客登录</button>
     </div>
 
 </div>
 </body>
 <script>
     $(function(){
+        //登录
         $(".button-login").click(function () {
             var account = $(".login-account").val();
             var password = $(".login-password").val();
-            $.post("/login",{account:account, password:password},function (res) {
+            $.post("/login/user",{account:account, password:password},function (res) {
                 if(res == null || res == ""){
                     alert("login fail")
                 }else{
                     alert("welcome " + res.nickname)
+                    document.cookie = "name=" + res.nickname + "; Path=/";
+                    document.cookie = "account=" + res.account + "; Path=/";
+                    window.location = "/index";
                 }
+            });
+        });
+
+        //游客登录
+        $(".guest-login").click(function () {
+            $.post("/login/guest",function (res) {
+                document.cookie = "name=" + res.nickname + "; Path=/";
+                document.cookie = "account=" + res.account + "; Path=/";
+                window.location = "/index";
             });
         });
     });
